@@ -134,14 +134,14 @@ a {
     width: 880px;
 }
 
-#art1 video {
+/* #art1 video {
     position: absolute;
     left: 50%;
     margin-left: -444.44px;
     margin-top: 2.5px;
     height: 495px;
     width: 880px;
-}
+} */
 
 .sec1 {
     float: left;
@@ -186,8 +186,8 @@ a {
     padding: 10px;
     background-color: #f9f4dc;
     border-radius: 15px 0 0 15px;
-    transition: all 5s;
     overflow: hidden;
+    transition: width 5s;
 }
 
 #sec:hover #ol {
