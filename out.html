@@ -10,8 +10,8 @@
     <title>草稿</title>
     <style>
         * {
-            padding: 0;
-            margin: 0;
+            padding: 0px;
+            margin: 0px;
             border: 0;
         }
 
@@ -24,60 +24,86 @@
             color: #fff;
         }
 
-        .bt {
+        .main {
+            background: linear-gradient(to right top, #65dfc9, #6cdbeb);
+            height: 800px;
+            align-items: center;
+            justify-content: center;
+            padding-top: 16px;
+        }
+
+        .abc {
+            width: 90%;
+            margin: 0px auto;
+            padding-top: 5px;
+            background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+            text-align: center;
+        }
+
+        .abc h2 {
+            margin-bottom: 5px;
+            padding: 0px 10px;
+            display: inline-block;
             text-align: center;
             height: 50px;
             background-color: antiquewhite;
             line-height: 50px;
             font-size: 30px;
-            margin-bottom: 5px;
+            border-radius: 25px;
+            color: #658ec6;
         }
 
-        .weibu {
+        .bbc {
             text-align: center;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            background: linear-gradient(to right bottom, rgba(205, 189, 233, 0.7), rgba(255, 255, 255, 0.3));
         }
 
-        .weibu div {
+        .bbc div {
             display: inline-block;
             width: 19%;
             height: 60px;
             background-color: #da3;
             line-height: 60px;
             font-size: 30px;
+            border-radius: 15px;
+            color: #2775b6;
         }
 
         .ed div {
             text-align: center;
             overflow: hidden;
             font-size: 0.9em;
+            color: #426691;
+            border-radius: 15px;
         }
 
         .ed1 div {
+            margin-top: 10px;
             display: inline-block;
             width: 15%;
-            height: 50px;
-            line-height: 50px;
+            height: 35px;
+            line-height: 35px;
             background-color: #fed;
-            margin-top: 5px;
-
         }
 
         .ed2 div {
+            margin-top: 10px;
             display: inline-block;
             width: 15%;
-            height: 50px;
-            margin-top: 5px;
-            line-height: 50px;
+            height: 35px;
+            line-height: 35px;
             background-color: rgb(237, 125, 14);
         }
 
         .ed3 div {
+            margin-top: 10px;
             display: inline-block;
             width: 15%;
-            height: 50px;
-            margin-top: 5px;
+            height: 35px;
+            line-height: 35px;
             background-color: rgb(136, 212, 14);
-            line-height: 50px;
         }
 
         #pp {
@@ -86,117 +112,177 @@
             left: 5px;
             width: 36%;
         }
+
+        .t1,
+        .t2,
+        .t3 {
+            background: white;
+            background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+            height: 5rem;
+            width: 5rem;
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .t1 {
+            top: 16px;
+            right: 23px;
+        }
+
+        .t2 {
+            top: 202px;
+            left: 45px;
+        }
+
+        .t3 {
+            top: 322px;
+            right: 70px;
+        }
     </style>
 </head>
 
 <body>
-    <a href="https://xgd1062.github.io/x/index.html">
-        <div class="bt">首页</div>
-    </a>
+    <div class="main">
+        <!-- 第一部分 -->
+        <div class="abc">
 
+            <div>
+                <a href="https://xgd1062.github.io/x/index.html">
+                    <h2>首页</h2>
+                </a>
+            </div>
 
-    <a href="http://i.chaoxing.com/base?t=1633682044693">
-        <div class="bt">学习通</div>
-    </a>
-    <a href="https://pc.woozooo.com/mydisk.php">
-        <div class="bt">蓝奏云</div>
-    </a>
-    <a href="https://www.speedtest.cn/">
-        <div class="bt">测速网站</div>
-    </a>
+            <div>
+                <a href="http://i.chaoxing.com/base?t=1633682044693">
+                    <h2>学习通</h2>
+                </a>
+            </div>
 
-    <a href="http://tool.liumingye.cn/music/?page=searchPage">
-        <div class="bt">音乐网站</div>
-    </a>
-    <a href="https://www.bilibili.com/">
-        <div class="bt">哔哩哔哩</div>
-    </a>
-    <a href="https://www.ahau.edu.cn/">
-        <div class="bt">安徽农业大学</div>
-    </a>
-    <a href="https://github.com/">
-        <div class="bt">全球最大的同性交友网站</div>
-    </a>
-    <!-- 上面单行。下面小块 -->
-    <div class="weibu">
-        <a href="https://docs.qq.com/desktop/mydoc?u=cbb8af7a4ef141c0af3876d5c159a1ec&_t=1662381779215">
-            <div>你好</div>
-        </a>
-        <a href="https://www.kdocs.cn/latest?from=docs">
-            <div>欢迎</div>
-        </a>
-        <a href="https://maomeng.cf/2021/06/11/ji-chang-tui-jian-chang-qi-geng-xin/">
-            <div>来到</div>
-        </a>
-        <a href="https://vpn.ahau.edu.cn/">
-            <div>我的</div>
-        </a>
-        <a href="http://114.213.146.201/jwglxt/">
-            <div>世界</div>
-        </a>
+            <div>
+                <a href="https://pc.woozooo.com/mydisk.php">
+                    <h2>蓝奏云</h2>
+                </a>
+            </div>
+
+            <div>
+                <a href="https://www.speedtest.cn/">
+                    <h2>测速网站</h2>
+                </a>
+            </div>
+
+            <div>
+                <a href="http://tool.liumingye.cn/music/?page=searchPage">
+                    <h2>音乐网站</h2>
+                </a>
+            </div>
+
+            <div>
+                <a href="https://www.bilibili.com/">
+                    <h2>哔哩哔哩</h2>
+                </a>
+            </div>
+
+            <div>
+                <a href="https://www.ahau.edu.cn/">
+                    <h2>安徽农业大学</h2>
+                </a>
+            </div>
+
+            <div>
+                <a href="https://github.com/">
+                    <h2>全球最大的同性交友网站</h2>
+                </a>
+            </div>
+
+        </div>
+        <!-- 上面单行。下面隔间 -->
+        <div class="bbc">
+            <a href="https://docs.qq.com/desktop/mydoc?u=cbb8af7a4ef141c0af3876d5c159a1ec&_t=1662381779215">
+                <div>你好</div>
+            </a>
+            <a href="https://www.kdocs.cn/latest?from=docs">
+                <div>欢迎</div>
+            </a>
+            <a href="https://maomeng.cf/2021/06/11/ji-chang-tui-jian-chang-qi-geng-xin/">
+                <div>来到</div>
+            </a>
+            <a href="https://vpn.ahau.edu.cn/">
+                <div>我的</div>
+            </a>
+            <a href="http://114.213.146.201/jwglxt/">
+                <div>世界</div>
+            </a>
+        </div>
+        <!-- 具体小隔间 -->
+        <div class="ed">
+            <div class="ed1">
+                <a href="http://i-ahau-edu-cn.webvpn.ahau.edu.cn">
+                    <div>智慧安农</div>
+                </a>
+                <a href="http://newjwxt-ahau-edu-cn.webvpn.ahau.edu.cn/jwglxt/xtgl/index_initMenu.html">
+                    <div>本科教务</div>
+                </a>
+                <a href="http://ykt-ahau-edu-cn.webvpn.ahau.edu.cn/ZSANAPP/WEB/index.aspx#">
+                    <div>一卡通</div>
+                </a>
+                <a href="http://ss-ahau-edu-cn.webvpn.ahau.edu.cn/Self/dashboard">
+                    <div>网络计费</div>
+                </a>
+                <a href="http://fresh-ahau-edu-cn.webvpn.ahau.edu.cn/yxxt-v5/qj/xsqj/cx.zf">
+                    <div>请销假</div>
+                </a>
+                <a href="http://pan-ahau-edu-cn.webvpn.ahau.edu.cn/cloudservice/home.html">
+                    <div>安农云盘</div>
+                </a>
+            </div>
+
+            <div class="ed2">
+                <a href="http://hellodesk.cn/download.html">
+                    <div>ToDesk</div>
+                </a>
+                <a href="https://1105.lanzouv.com/b09bnxxuf">
+                    <div>Geek卸载</div>
+                </a>
+                <a href="https://1105.lanzouv.com/b09b1i7sf">
+                    <div>HEU激活工具</div>
+                </a>
+                <a href="https://1105.lanzouv.com/b09bancab">
+                    <div>安卓必备</div>
+                </a>
+                <a href="https://1105.lanzouv.com/b09bq5yzg">
+                    <div>PC下载软件</div>
+                </a>
+                <a href="https://1105.lanzouv.com/b09bq5zre">
+                    <div>压缩软件</div>
+                </a>
+            </div>
+
+            <div class="ed3">
+                <a href="https://filehelper.weixin.qq.com/">
+                    <div>微信文件传输助手</div>
+                </a>
+                <a href="https://www.firepx.com/">
+                    <div>火哥分享</div>
+                </a>
+                <a href="https://www.yuque.com/docs/share/58a79aa7-a1b1-4c85-ab5e-e778c5faf683">
+                    <div>XP模块-午夜神</div>
+                </a>
+                <a href="https://beita.notion.site/beita/92e083c88c124fb9bd5c4b9d180e694d">
+                    <div>shell命令</div>
+                </a>
+                <a href="https://www.wandoujia.com/?spm=aligames_platform_ug.wdj_seo.0.0.24fb114eic2cql">
+                    <div>历史软件下载</div>
+                </a>
+                <a href="https://www.mmgal.com/">
+                    <div>暂放于此</div>
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="ed">
-        <div class="ed1">
-            <a href="http://i-ahau-edu-cn.webvpn.ahau.edu.cn">
-                <div>智慧安农</div>
-            </a>
-            <a href="http://newjwxt-ahau-edu-cn.webvpn.ahau.edu.cn/jwglxt/xtgl/index_initMenu.html">
-                <div>本科教务</div>
-            </a>
-            <a href="http://ykt-ahau-edu-cn.webvpn.ahau.edu.cn/ZSANAPP/WEB/index.aspx#">
-                <div>一卡通</div>
-            </a>
-            <a href="http://ss-ahau-edu-cn.webvpn.ahau.edu.cn/Self/dashboard">
-                <div>网络计费</div>
-            </a>
-            <a href="http://fresh-ahau-edu-cn.webvpn.ahau.edu.cn/yxxt-v5/qj/xsqj/cx.zf">
-                <div>请销假</div>
-            </a>
-            <a href="http://pan-ahau-edu-cn.webvpn.ahau.edu.cn/cloudservice/home.html">
-                <div>安农云盘</div>
-            </a>
-        </div>
-        <div class="ed2">
-            <a href="http://hellodesk.cn/download.html">
-                <div>ToDesk</div>
-            </a>
-            <a href="https://1105.lanzouv.com/b09bnxxuf">
-                <div>Geek卸载</div>
-            </a>
-            <a href="https://1105.lanzouv.com/b09b1i7sf">
-                <div>HEU激活工具</div>
-            </a>
-            <a href="https://1105.lanzouv.com/b09bancab">
-                <div>安卓必备</div>
-            </a>
-            <a href="https://1105.lanzouv.com/b09bq5yzg">
-                <div>PC下载软件</div>
-            </a>
-            <a href="https://1105.lanzouv.com/b09bq5zre">
-                <div>压缩软件</div>
-            </a>
-        </div>
-        <div class="ed3">
-            <a href="https://filehelper.weixin.qq.com/">
-                <div>微信文件传输助手</div>
-            </a>
-            <a href="https://www.firepx.com/">
-                <div>火哥分享</div>
-            </a>
-            <a href="https://www.yuque.com/docs/share/58a79aa7-a1b1-4c85-ab5e-e778c5faf683">
-                <div>XP模块-午夜神</div>
-            </a>
-            <a href="https://beita.notion.site/beita/92e083c88c124fb9bd5c4b9d180e694d">
-                <div>shell命令</div>
-            </a>
-            <a href="https://www.wandoujia.com/?spm=aligames_platform_ug.wdj_seo.0.0.24fb114eic2cql">
-                <div>历史软件下载</div>
-            </a>
-            <a href="https://www.mmgal.com/">
-                <div>暂放于此</div>
-            </a>
-        </div>
-    </div>
+
+    <div class="t1"></div>
+    <div class="t2"></div>
+    <div class="t3"></div>
     <img id="pp" src="https://wx1.sinaimg.cn/mw690/007ysBm6ly1h68jcc4820j30gj097t9p.jpg" alt="微信扫一扫" title="微信扫一扫">
 </body>
 
