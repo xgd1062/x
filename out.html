@@ -8,6 +8,7 @@
     <meta name="referrer" content="no-referrer" />
     <link rel="icon" type="image/x-icon" href="../static/home/img/home/ico.ico">
     <title>软件收藏页</title>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
     <style>
         * {
             padding: 0px;
@@ -139,6 +140,15 @@
             top: 5px;
             left: 5px;
             width: 36%;
+        }
+
+        .yiyan {
+            font-size: 18px;
+            color: #d4acad;
+            width: 100%;
+            position: absolute;
+            bottom: -20px;
+            text-align: center;
         }
 
         .t1,
@@ -315,6 +325,10 @@
             <a href="https://film.qq.com/">腾讯视频</a>
             <a href="#">火绒安全</a>
             <a href="#">火绒安全</a>
+        </div>
+
+        <div class="yiyan">
+            <span id="jinrishici-sentence" style="background: #b2d7e9;padding: 0 5px;border-radius: 8px;">正在加载今日诗词....</span>
         </div>
     </div>
 
