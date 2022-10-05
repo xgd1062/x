@@ -1,6 +1,7 @@
 * {
     margin: 0;
     border: 0;
+    padding: 0;
 }
 
 li {
@@ -11,7 +12,7 @@ li {
 
 /* 导航栏 */
 #nav1 {
-    width: 1366px;
+    width: 1400px;
     height: 100px;
     background-color: #b0d5df;
     box-sizing: border-box;
@@ -26,8 +27,7 @@ li {
 
 .n1-1 {
     display: inline-block;
-    /* background-color: #f1c4cd; */
-    width: 550px;
+    margin: 0 auto;
     margin-top: 25px;
 }
 
@@ -59,44 +59,42 @@ a {
 
 /* 左侧选择栏 */
 #art1 {
-    width: 1366px;
+    width: 1346px;
     height: 500px;
     background-color: #feba07;
     margin: 20px auto 0;
     border-radius: 15px;
+    overflow: hidden;
 }
 
-#art1 div {
+.c1,
+.c2 {
     float: left;
-
 }
 
 .c1 {
-    width: 300px;
+    width: 20%;
     height: 500px;
     background-color: #fbecde;
-    border-radius: 15px 0 0 15px;
 }
 
 .c1 li {
-    width: 285px;
+    width: 100%;
     height: 100px;
-    padding-left: 15px;
+    padding-left: 50px;
     line-height: 100px;
     position: relative;
-    /* transition: all 0.1s; */
+    box-sizing: border-box;
 }
 
 .c1 li:hover {
     background-color: #ff6600;
-    border-radius: 15px;
 }
 
 .c1 li::after {
     content: " \e65b";
     font-family: "iconfont";
     position: absolute;
-    top: 0px;
     right: 30px;
 }
 
@@ -106,11 +104,12 @@ a {
     left: 305px;
     height: 100px;
     transition: all 0.5s;
-    /* z-index: 1; */
+    z-index: -1;
+
 }
 
 .c1 li:hover img {
-    z-index: 1;
+    z-index: 2;
     height: 450px;
 }
 
@@ -118,20 +117,16 @@ a {
 
 /* 视频区 */
 .c2 {
-    width: calc(100% - 300px);
+    width: 80%;
     height: 500px;
     background-color: #f1c4cd;
-    border-radius: 0px 15px 15px 0px;
-    position: relative;
+    text-align: center;
 }
 
 #art1 iframe {
-    position: absolute;
-    left: 50%;
-    margin-left: -444.44px;
-    margin-top: 2.5px;
-    height: 495px;
-    width: 880px;
+    height: 500px;
+    width: 777px;
+    border-radius: 15px;
 }
 
 /* #art1 video {
@@ -143,64 +138,36 @@ a {
     width: 880px;
 } */
 
-.sec1 {
-    float: left;
-    height: 500px;
-    width: 85px;
-    /* background-color: #fff; */
-}
-
-.sec1 li {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    /* background-color: #fff; */
-    margin-left: 5px;
-    margin-top: 20px;
-    font-family: "iconfont";
-    line-height: 80px;
-    font-size: 59px;
-    text-align: center;
-    color: #2775b6;
-    transition: all 0.3s;
-}
-
-.sec1 li:hover {
-    color: #de3f7c;
-}
-
 /* 视频区 */
 
 /* 八块区 */
 #sec {
     height: 110px;
-    width: 1366px;
+    width: 1346px;
     background-color: #d2d97a;
     margin: 10px auto;
     border-radius: 15px;
+    overflow: hidden;
 }
 
 #ol {
-    height: 90px;
-    width: 15%;
-    padding: 10px;
+    height: 110px;
+    width: 16%;
     background-color: #f9f4dc;
-    border-radius: 15px 0 0 15px;
     overflow: hidden;
-    transition: width 5s;
+    transition: all 5s;
 }
 
 #sec:hover #ol {
-    width: 98%;
+    width: 100%;
 }
 
 #ol li {
     float: left;
-    width: 160px;
+    width: 12%;
     height: 90px;
-    box-sizing: border-box;
-    margin-left: 7px;
-    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 0.25%;
     background-color: #f1f0ed;
     border-radius: 15px;
     overflow: hidden;
@@ -211,8 +178,16 @@ a {
     height: 90px;
 }
 
+#foo {
+    width: 1400px;
+    margin: 0 auto;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
 #fd1 {
     height: 30px;
+    width: 100%;
     background-color: #eea2a4;
     transition: all 0.5s;
 }
