@@ -26,28 +26,6 @@
             color: #fff;
         }
 
-#pp {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            width: 24%;
-            border-radius: 25px;
-            content: url(https://xgd1062.github.io/v/img/mp.png);
-        }
-
-
-        @media screen and (max-width:600px) {
-            #pp {
-                position: absolute;
-                top: 5px;
-                left: 5px;
-                width: 24%;
-                border-radius: 10px;
-                content: url(https://xgd1062.github.io/v/img/mp2.png);
-            }
-        }
-
-        
         .main {
             background: linear-gradient(to right top, #65dfc9, #6cdbeb);
             height: 812px;
@@ -141,10 +119,18 @@
             background-color: #d4eaee;
         }
 
+        #pp {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 24%;
+            border-radius: 25px;
+            content: url(https://xgd1062.github.io/v/img/mp.png);
+        }
+
         .dd {
             margin: 0px auto;
             padding: 5px;
-
             width: 80%;
             background: #f9e8d0;
             border-radius: 1rem;
@@ -156,6 +142,25 @@
             border-radius: 1rem;
             line-height: 25px;
             padding: 0px 5px;
+        }
+
+        @media screen and (max-width:600px) {
+            #pp {
+                position: absolute;
+                top: 5px;
+                left: 5px;
+                width: 24%;
+                border-radius: 25px;
+                content: url(https://xgd1062.github.io/v/img/mp2.png);
+            }
+
+            .dd {
+                text-align: center;
+            }
+
+            .dd a {
+                white-space: nowrap;
+            }
         }
 
         .yiyan {
