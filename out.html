@@ -5,185 +5,304 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer" />
+    <meta name="referrer" content="no-referrer">
     <link rel="shortcut icon" href="https://xgd1062.github.io/v/img/星星.png">
-    <!-- <link rel="icon" type="image/x-icon" href="../static/home/img/home/ico.ico"> -->
     <title>软件收藏页</title>
     <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
     <style>
+        /* CSS 变量管理色彩 - 默认日间模式 */
+        :root {
+            --bg-main: linear-gradient(to right top, #65dfc9, #6cdbeb);
+            --card-bg-abc: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+            --btn-bg-abc: antiquewhite;
+            --text-abc: #658ec6;
+
+            --card-bg-bbc: linear-gradient(to right bottom, rgba(170, 161, 206, 0.5), rgba(237, 236, 246, 0.7));
+            --btn-bg-bbc: #dce3f3;
+            --text-bbc: #2775b6;
+
+            --card-bg-ed: linear-gradient(to right bottom, rgba(195, 224, 231, 0.7), rgba(190, 224, 208, 0.7));
+            --btn-bg-ed1: #d4eaee;
+            --btn-bg-ed2: #e2f2f6;
+            --text-ed: #426691;
+
+            --card-bg-dd: #f9e8d0;
+            --btn-bg-dd: #8fb2c9;
+            --text-dd: #ffffff;
+
+            --text-yiyan: #d4acad;
+            --bg-yiyan-span: #b2d7e9;
+            --text-yiyan-span: #000000;
+
+            --text-link: #000000;
+            --text-link-hover: #ffffff;
+
+            --toggle-bg: rgba(255, 255, 255, 0.8);
+            --toggle-color: #333333;
+        }
+
+        /* 夜晚模式 (Dark Mode) */
+        body.dark-mode {
+            --bg-main: linear-gradient(to right top, #0f2027, #203a43, #2c5364);
+            --card-bg-abc: linear-gradient(to right bottom, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
+            --btn-bg-abc: #1e293b;
+            --text-abc: #93c5fd;
+
+            --card-bg-bbc: linear-gradient(to right bottom, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
+            --btn-bg-bbc: #334155;
+            --text-bbc: #60a5fa;
+
+            --card-bg-ed: linear-gradient(to right bottom, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
+            --btn-bg-ed1: #334155;
+            --btn-bg-ed2: #1e293b;
+            --text-ed: #cbd5e1;
+
+            --card-bg-dd: rgba(30, 41, 59, 0.8);
+            --btn-bg-dd: #475569;
+            --text-dd: #f1f5f9;
+
+            --text-yiyan: #94a3b8;
+            --bg-yiyan-span: #334155;
+            --text-yiyan-span: #f1f5f9;
+
+            --text-link: #e2e8f0;
+            --text-link-hover: #38bdf8;
+
+            --toggle-bg: rgba(30, 41, 59, 0.9);
+            --toggle-color: #fbbf24;
+        }
+
+        /* 基础重置 */
         * {
-            padding: 0px;
-            margin: 0px;
+            padding: 0;
+            margin: 0;
             border: 0;
+            box-sizing: border-box;
         }
 
         a {
             text-decoration: none;
-            color: #000;
+            color: var(--text-link);
+            transition: color 0.2s ease;
         }
 
         a:hover {
-            color: #fff;
+            color: var(--text-link-hover);
         }
 
-        .main {
-            background: linear-gradient(to right top, #65dfc9, #6cdbeb);
-            height: 812px;
+        /* 夜晚模式切换按钮样式 */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 999;
+            background: var(--toggle-bg);
+            color: var(--toggle-color);
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding-top: 16px;
-            z-index: -1;
+            font-size: 20px;
+            transition: all 0.3s ease;
         }
 
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* 主容器布局 */
+        .main {
+            background: var(--bg-main);
+            min-height: 100vh;
+            padding-top: 16px;
+            padding-bottom: 20px;
+            position: relative;
+            transition: background 0.3s ease;
+        }
+
+        /* 第一部分：三行随机长度布局 */
         .abc {
             width: 90%;
-            margin: 0px auto;
-            padding-top: 5px;
-            background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
-            text-align: center;
+            margin: 0 auto;
+            padding: 12px 15px;
+            background: var(--card-bg-abc);
             border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: background 0.3s ease;
         }
 
-        .abc h2 {
-            margin-bottom: 5px;
-            padding: 0px 3%;
-            display: inline-block;
-            text-align: center;
+        .abc-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .abc-row a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             height: 50px;
-            background-color: antiquewhite;
-            line-height: 50px;
-            font-size: 30px;
+            background-color: var(--btn-bg-abc);
             border-radius: 25px;
-            color: #658ec6;
-        }
-
-        .bbc {
-            margin-top: 10px;
             text-align: center;
-            padding-top: 6px;
-            padding-bottom: 6px;
-            background: linear-gradient(to right bottom, rgba(170, 161, 206, 0.5), rgba(237, 236, 246, 0.7));
-            border-radius: 1rem;
+            transition: background-color 0.3s ease;
         }
 
-        .bbc div {
-            display: inline-block;
-            width: 19%;
+        .abc-row h2 {
+            font-size: 26px;
+            color: var(--text-abc);
+            font-weight: normal;
+            white-space: nowrap;
+        }
+
+        /* 长短错落修饰类 */
+        .abc-row .w-sm {
+            padding: 0 18px;
+            flex-grow: 1;
+            max-width: 160px;
+        }
+
+        .abc-row .w-md {
+            padding: 0 30px;
+            flex-grow: 2;
+            max-width: 260px;
+        }
+
+        .abc-row .w-lg {
+            padding: 0 45px;
+            flex-grow: 3;
+            max-width: 380px;
+        }
+
+        /* 中部欢迎栏 */
+        .bbc {
+            width: 90%;
+            margin: 10px auto 0;
+            padding: 6px 10px;
+            background: var(--card-bg-bbc);
+            border-radius: 1rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 1%;
+            transition: background 0.3s ease;
+        }
+
+        .bbc a {
+            flex: 1;
             height: 60px;
-            background-color: #dce3f3;
             line-height: 60px;
+            background-color: var(--btn-bg-bbc);
+            text-align: center;
             font-size: 30px;
             border-radius: 15px;
-            color: #2775b6;
+            color: var(--text-bbc);
+            transition: background-color 0.3s ease;
         }
 
+        /* 分组链接区 */
         .ed {
-            background: linear-gradient(to right bottom, rgba(195, 224, 231, 0.7), rgba(190, 224, 208, 0.7));
+            background: var(--card-bg-ed);
             border-radius: 1rem;
-            margin: 10px 3%;
+            margin: 10px 5%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: background 0.3s ease;
         }
 
-        .ed div {
+        .ed-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .ed-row a {
+            flex: 1;
+            height: 35px;
+            line-height: 35px;
             text-align: center;
             overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             font-size: 0.9em;
             border-radius: 15px;
-            color: #426691;
+            color: var(--text-ed);
+            background-color: var(--btn-bg-ed1);
+            transition: background-color 0.3s ease;
         }
 
-        .ed1 div {
-            margin-top: 10px;
-            display: inline-block;
-            width: 15%;
-            height: 35px;
-            line-height: 35px;
-            background-color: #d4eaee;
+        .ed-row.ed2 a {
+            background-color: var(--btn-bg-ed2);
         }
 
-        .ed2 div {
-            margin-top: 10px;
-            display: inline-block;
-            width: 15%;
-            height: 35px;
-            line-height: 35px;
-            background-color: #e2f2f6;
-        }
-
-        .ed3 div {
-            margin-top: 10px;
-            margin-bottom: 8px;
-            display: inline-block;
-            width: 15%;
-            height: 35px;
-            line-height: 35px;
-            background-color: #d4eaee;
-        }
-
-        #pp {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            width: 24%;
-            border-radius: 25px;
-            content: url(https://xgd1062.github.io/v/img/mp.png);
-        }
-
+        /* 底部链接区 */
         .dd {
-            margin: 0px auto;
-            padding: 5px;
+            margin: 0 auto;
+            padding: 10px;
             width: 80%;
-            background: #f9e8d0;
+            background: var(--card-bg-dd);
             border-radius: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.3s ease;
         }
 
         .dd a {
-            background-color: #8fb2c9;
-            color: white;
+            background-color: var(--btn-bg-dd);
+            color: var(--text-dd);
             border-radius: 1rem;
             line-height: 25px;
-            padding: 0px 5px;
+            padding: 2px 10px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
         }
 
-        @media screen and (max-width:600px) {
-            .main {
-                height: 100%;
-            }
-
-            #pp {
-                position: absolute;
-                top: 5px;
-                left: 5px;
-                width: 24%;
-                border-radius: 10%;
-                content: url(https://xgd1062.github.io/v/img/mp2.webp);
-            }
-
-            .dd {
-                text-align: center;
-            }
-
-            .dd a {
-                white-space: nowrap;
-            }
-        }
-
+        /* 诗词挂载 */
         .yiyan {
             font-size: 18px;
-            color: #d4acad;
+            color: var(--text-yiyan);
             width: 100%;
             text-align: center;
-            margin-top: 7px;
+            margin-top: 12px;
         }
 
+        .yiyan span {
+            background: var(--bg-yiyan-span);
+            color: var(--text-yiyan-span);
+            padding: 2px 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        /* 浮动背景圆圈 */
         .t1,
         .t2,
         .t3 {
-            background: white;
             background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
             height: 5rem;
             width: 5rem;
             position: absolute;
             border-radius: 50%;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        body.dark-mode .t1,
+        body.dark-mode .t2,
+        body.dark-mode .t3 {
+            opacity: 0.2;
         }
 
         .t1 {
@@ -200,147 +319,133 @@
             top: 322px;
             right: 70px;
         }
+
+        /* 二维码定位 */
+        .qr-code {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 24%;
+            max-width: 120px;
+            border-radius: 25px;
+        }
+
+        .qr-code img {
+            width: 100%;
+            display: block;
+            border-radius: inherit;
+        }
+
+        /* 移动端适配 */
+        @media screen and (max-width: 600px) {
+            .abc-row {
+                flex-wrap: wrap;
+            }
+
+            .abc-row a {
+                width: 100%;
+                max-width: none !important;
+            }
+
+            .qr-code {
+                border-radius: 10%;
+            }
+
+            .dd {
+                text-align: center;
+            }
+
+            .dd a {
+                white-space: nowrap;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="main">
-        <!-- 第一部分 -->
-        <div class="abc">
+    <!-- 夜晚模式切换按钮 -->
+    <button class="dark-mode-toggle" id="darkModeBtn" title="切换模式" aria-label="切换夜晚模式">🌙</button>
 
-            <div>
-                <a href="http://xgd1062.github.io/x/index.html">
+    <div class="main">
+        <!-- 第一部分：分成三行，不同比例/长度的随机错落布局 -->
+        <div class="abc">
+            <!-- 第 1 行 -->
+            <div class="abc-row">
+                <a href="http://xgd1062.github.io/x/index.html" class="w-sm">
                     <h2>首页</h2>
                 </a>
-            </div>
-
-            <div>
-                <a href="http://i.chaoxing.com/base?t=1633682044693">
+                <a href="http://i.chaoxing.com/base?t=1633682044693" class="w-md">
                     <h2>学习通</h2>
                 </a>
-            </div>
-
-            <div>
-                <a href="http://pc.woozooo.com/mydisk.php">
+                <a href="http://pc.woozooo.com/mydisk.php" class="w-lg">
                     <h2>蓝奏云</h2>
                 </a>
             </div>
 
-            <div>
-                <a href="http://test.nju.edu.cn/">
+            <!-- 第 2 行 -->
+            <div class="abc-row">
+                <a href="http://github.com/" class="w-lg">
+                    <h2>全球最大的同性交友网站</h2>
+                </a>
+                <a href="http://test.nju.edu.cn/" class="w-sm">
                     <h2>测速网站</h2>
                 </a>
             </div>
 
-            <div>
-                <a href="http://tool.liumingye.cn/music/?page=searchPage">
+            <!-- 第 3 行 -->
+            <div class="abc-row">
+                <a href="http://tool.liumingye.cn/music/?page=searchPage" class="w-md">
                     <h2>音乐网站</h2>
                 </a>
-            </div>
-
-            <div>
-                <a href="http://www.bilibili.com/">
+                <a href="http://www.bilibili.com/" class="w-sm">
                     <h2>哔哩哔哩</h2>
                 </a>
-            </div>
-
-            <div>
-                <a href="http://www.ahau.edu.cn/">
+                <a href="http://www.ahau.edu.cn/" class="w-lg">
                     <h2>安徽农业大学</h2>
                 </a>
             </div>
-
-            <div>
-                <a href="http://github.com/">
-                    <h2 style="font-size: 27px;">全球最大的同性交友网站</h2>
-                </a>
-            </div>
-
         </div>
+
         <!-- 上面单行。下面隔间 -->
         <div class="bbc">
-            <a href="http://xgd1062.github.io/v">
-                <div>你好</div>
-            </a>
-            <a href="#">
-                <div>欢迎</div>
-            </a>
-            <a href="#">
-                <div>来到</div>
-            </a>
-            <a href="#">
-                <div>我的</div>
-            </a>
-            <a href="http://kdocs.cn/l/cmS2SqU1Ckt9">
-                <div>世界</div>
-            </a>
+            <a href="#">你好</a>
+            <a href="#">欢迎</a>
+            <a href="#">来到</a>
+            <a href="#">我的</a>
+            <a href="http://kdocs.cn/l/cmS2SqU1Ckt9">世界</a>
         </div>
+
         <!-- 具体小隔间 -->
         <div class="ed">
-            <div class="ed1">
-                <a href="https://doo.x219.qzz.io/">
-                    <div>涂鸦手账</div>
-                </a>
-                <a href="http://e.ahau.edu.cn/ipcheck6.jsp">
-                    <div>智慧安农</div>
-                </a>
-                <a href="#">
-                    <div>暂无</div>
-                </a>
-                <a href="http://www.yuxin-ai.com/chat/new?id=IGx_s_EGaaFhjrxcTpJb3">
-                    <div>chatGPT</div>
-                </a>
-                <a href="#">
-                    <div>暂无</div>
-                </a>
-                <a href="http://www.google.com/">
-                    <div>谷歌</div>
-                </a>
+            <div class="ed-row ed1">
+                <a href="#">暂无</a>
+                <a href="http://e.ahau.edu.cn/ipcheck6.jsp">智慧安农</a>
+                <a href="#">暂无</a>
+                <a href="http://www.yuxin-ai.com/chat/new?id=IGx_s_EGaaFhjrxcTpJb3">chatGPT</a>
+                <a href="#">暂无</a>
+                <a href="http://www.google.com/">谷歌</a>
             </div>
 
-            <div class="ed2">
-                <a href="http://hellodesk.cn/download.html">
-                    <div>ToDesk</div>
-                </a>
-                <a href="http://1105.lanzouv.com/b09bnxxuf">
-                    <div>Geek卸载</div>
-                </a>
-                <a href="http://1105.lanzouv.com/b09b1i7sf">
-                    <div>HEU激活工具</div>
-                </a>
-                <a href="http://1105.lanzouv.com/b09bancab">
-                    <div>安卓必备</div>
-                </a>
-                <a href="http://1105.lanzouv.com/b09bq5yzg">
-                    <div>PC下载软件</div>
-                </a>
-                <a href="http://1105.lanzouv.com/b09bq5zre">
-                    <div>压缩软件</div>
-                </a>
+            <div class="ed-row ed2">
+                <a href="http://hellodesk.cn/download.html">ToDesk</a>
+                <a href="http://1105.lanzouv.com/b09bnxxuf">Geek卸载</a>
+                <a href="http://1105.lanzouv.com/b09b1i7sf">HEU激活工具</a>
+                <a href="http://1105.lanzouv.com/b09bancab">安卓必备</a>
+                <a href="http://1105.lanzouv.com/b09bq5yzg">PC下载软件</a>
+                <a href="http://1105.lanzouv.com/b09bq5zre">压缩软件</a>
             </div>
 
-            <div class="ed3">
-                <a href="http://filehelper.weixin.qq.com/">
-                    <div>微信文件传输助手</div>
-                </a>
-                <a href="http://www.firepx.com/">
-                    <div>火哥分享</div>
-                </a>
-                <a href="http://www.testufo.com/">
-                    <div>UFO刷新率测试</div>
-                </a>
-                <a href="http://next.itellyou.cn/Original/Index">
-                    <div>原版系统镜像</div>
-                </a>
-                <a href="http://im.qq.com/index/">
-                    <div>QQ</div>
-                </a>
+            <div class="ed-row ed3">
+                <a href="http://filehelper.weixin.qq.com/">微信文件传输助手</a>
+                <a href="http://www.firepx.com/">火哥分享</a>
+                <a href="http://www.testufo.com/">UFO刷新率测试</a>
+                <a href="http://next.itellyou.cn/Original/Index">原版系统镜像</a>
+                <a href="http://im.qq.com/index/">QQ</a>
                 <a
-                    href="http://www.wandoujia.com/apps/596157/history?spm=aligames_platform_ug.wdj_seo.0.0.47dd9bb4KS6gyg">
-                    <div>历史软件下载</div>
-                </a>
+                    href="http://www.wandoujia.com/apps/596157/history?spm=aligames_platform_ug.wdj_seo.0.0.47dd9bb4KS6gyg">历史软件下载</a>
             </div>
         </div>
+
         <!-- 下方任意区 -->
         <div class="dd">
             <a href="http://www.huorong.cn/person5.html">火绒安全</a>
@@ -354,21 +459,41 @@
             <a href="http://iknow.lenovo.com.cn/tool/lists">联想工具-大家的工具</a>
             <a href="http://dm.weishi.360.cn/home.html">360驱动</a>
             <a href="http://www.moakt.com/zh">临时邮箱</a>
-
-
         </div>
 
         <div class="yiyan">
-            <span id="jinrishici-sentence"
-                style="background: #b2d7e9;padding: 0 5px;border-radius: 8px;">正在加载今日诗词....</span>
+            <span id="jinrishici-sentence">正在加载今日诗词....</span>
         </div>
     </div>
 
     <div class="t1"></div>
     <div class="t2"></div>
     <div class="t3"></div>
-    <a href="http://xgd1062.github.io/v"><img id="pp" alt="微信扫一扫" title="微信扫一扫"></a>
+
+    <a href="http://xgd1062.github.io/v" class="qr-code">
+        <picture>
+            <source media="(max-width: 600px)" srcset="https://xgd1062.github.io/v/img/mp2.webp">
+            <img src="https://xgd1062.github.io/v/img/mp.png" alt="微信扫一扫" title="微信扫一扫">
+        </picture>
+    </a>
+
+    <!-- 夜晚模式切换 JS -->
+    <script>
+        const btn = document.getElementById('darkModeBtn');
+
+        // 读取本地存储模式状态
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            btn.textContent = '☀️';
+        }
+
+        btn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            btn.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+    </script>
 </body>
 
 </html>
-
