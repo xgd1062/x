@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幸运抽奖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff4d4f;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .prize-box {
+            border: 2px dashed #ff4d4f;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            background: #fff7f7;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #startBtn {
+            background: #ff4d4f;
+            color: white;
+        }
+
+        #startBtn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        #resetBtn {
+            background: #1890ff;
+            color: white;
+        }
+
+        #settingBtn {
+            background: #52c41a;
+            color: white;
+        }
+
+        .record {
+            margin-top: 20px;
+        }
+
+        .record h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        #recordList {
+            max-height: 180px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .record-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 25px;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: none;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .modal-btn {
+            display: flex;
+            gap: 10px;
+        }
+
+        #saveBtn {
+            background: #52c41a;
+            color: white;
+        }
+
+        #closeBtn {
+            background: #ccc;
+            color: #333;
+        }
+
+        .tip {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎉 幸运抽奖 🎉</h1>
+    <div class="prize-box" id="prizeBox">点击开始抽奖</div>
+
+    <div class="btn-group">
+        <button id="startBtn">开始抽奖</button>
+        <button id="resetBtn">清空记录</button>
+        <button id="settingBtn">奖品设置</button>
+    </div>
+
+    <div class="record">
+        <h3>抽奖记录</h3>
+        <div id="recordList">暂无记录</div>
+    </div>
+</div>
+
+<!-- 奖品设置弹窗 -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h3>奖品配置（一行一个）</h3>
+        <textarea id="prizeInput" placeholder="例如：
+一等奖
+二等奖
+三等奖
+谢谢参与"></textarea>
+        <div class="tip">提示：奖品会保存在本地，刷新页面不会丢失</div>
+        <div class="modal-btn">
+            <button id="saveBtn">保存</button>
+            <button id="closeBtn">取消</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// 本地存储 KEY
+const STORAGE_KEY = 'lottery_prize_list';
+const RECORD_KEY = 'lottery_record_list';
+
+// DOM
+const prizeBox = document.getElementById('prizeBox');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
+const settingBtn = document.getElementById('settingBtn');
+const recordList = document.getElementById('recordList');
+const modal = document.getElementById('modal');
+const prizeInput = document.getElementById('prizeInput');
+const saveBtn = document.getElementById('saveBtn');
+const closeBtn = document.getElementById('closeBtn');
+
+// 初始化
+let prizeList = getPrizeList();
+let recordListData = getRecordList();
+let isRunning = false;
+let timer = null;
+
+renderRecord();
+
+// 开始抽奖
+startBtn.addEventListener('click', () => {
+    if (isRunning) return;
+    if (prizeList.length === 0) {
+        alert('请先设置奖品！');
+        openModal();
+        return;
+    }
+
+    isRunning = true;
+    startBtn.disabled = true;
+    prizeBox.textContent = '抽奖中...';
+
+    let count = 0;
+    const speed = 80;
+    const total = 30;
+
+    timer = setInterval(() => {
+        const random = Math.floor(Math.random() * prizeList.length);
+        prizeBox.textContent = prizeList[random];
+        count++;
+        if (count >= total) {
+            clearInterval(timer);
+            const final = prizeList[random];
+            prizeBox.textContent = `恭喜：${final}`;
+            addRecord(final);
+            isRunning = false;
+            startBtn.disabled = false;
+        }
+    }, speed);
+});
+
+// 重置记录
+resetBtn.addEventListener('click', () => {
+    if (!confirm('确定清空所有抽奖记录？')) return;
+    localStorage.removeItem(RECORD_KEY);
+    recordListData = [];
+    renderRecord();
+});
+
+// 打开设置
+settingBtn.addEventListener('click', openModal);
+closeBtn.addEventListener('click', closeModal);
+
+// 保存奖品
+saveBtn.addEventListener('click', () => {
+    const val = prizeInput.value.trim();
+    if (!val) {
+        prizeList = [];
+    } else {
+        prizeList = val.split('\n').map(item => item.trim()).filter(item => item);
+    }
+    savePrizeList(prizeList);
+    closeModal();
+    alert('奖品保存成功！');
+});
+
+// 本地存储方法
+function getPrizeList() {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : ['一等奖', '二等奖', '三等奖', '谢谢参与'];
+}
+
+function savePrizeList(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+function getRecordList() {
+    const data = localStorage.getItem(RECORD_KEY);
+    return data ? JSON.parse(data) : [];
+}
+
+function addRecord(prize) {
+    const time = new Date().toLocaleString();
+    recordListData.unshift({ prize, time });
+    localStorage.setItem(RECORD_KEY, JSON.stringify(recordListData));
+    renderRecord();
+}
+
+function renderRecord() {
+    if (recordListData.length === 0) {
+        recordList.innerHTML = '暂无记录';
+        return;
+    }
+    recordList.innerHTML = recordListData.map((item, index) => `
+        <div class="record-item">
+            ${index + 1}、${item.prize} —— ${item.time}
+        </div>
+    `).join('');
+}
+
+function openModal() {
+    prizeInput.value = prizeList.join('\n');
+    modal.style.display = 'flex';
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+}
+</script>
+</body>
+</html>

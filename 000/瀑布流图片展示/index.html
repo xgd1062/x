@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片展示工具（瀑布流+放大预览）</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 控制面板样式 */
+        .control-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .collapse-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .collapse-btn.collapsed {
+            transform: rotate(-180deg);
+        }
+
+        .panel-content {
+            transition: height 0.3s ease;
+        }
+
+        .panel-content.collapsed {
+            display: none;
+        }
+
+        .tab {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #e0e0e0;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: #2196F3;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        /* 瀑布流布局样式 */
+        .gallery {
+            column-count: 5;
+            column-gap: 10px;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            break-inside: avoid;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: zoom-in;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.2s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.02);
+        }
+
+        .empty-tip {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            background: white;
+            border-radius: 8px;
+            column-span: all;
+        }
+
+        /* 图片预览层样式（已删除关闭按钮相关） */
+        .preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .preview-modal.active {
+            display: flex;
+        }
+
+        .preview-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 4px;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 1000px) {
+            .gallery {
+                column-count: 3;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .gallery {
+                column-count: 2;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <div class="panel-header">
+                <div class="panel-title">图片加载设置</div>
+                <button class="collapse-btn" id="collapseBtn">▼</button>
+            </div>
+            <div class="panel-content" id="panelContent">
+                <div class="tab">
+                    <button class="tab-btn active" data-tab="remote">远程图片链接</button>
+                    <button class="tab-btn" data-tab="local">本地文件夹</button>
+                </div>
+
+                <div class="tab-content active" id="remote">
+                    <div class="form-group">
+                        <label for="image-links">图片链接（每行一个）</label>
+                        <textarea id="image-links" placeholder="示例：
+https://example.com/image1.jpg
+https://example.com/image2.png"></textarea>
+                    </div>
+                    <button id="load-remote-btn">加载图片</button>
+                </div>
+
+                <div class="tab-content" id="local">
+                    <div class="form-group">
+                        <label for="folder-input">选择本地文件夹</label>
+                        <input type="file" id="folder-input" webkitdirectory directory multiple accept="image/*">
+                    </div>
+                    <button id="load-local-btn">加载图片</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="gallery" id="image-gallery"></div>
+    </div>
+
+    <!-- 预览层（已删除关闭按钮） -->
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-content">
+            <img src="" alt="预览图片" class="preview-img" id="previewImg">
+        </div>
+    </div>
+
+    <script>
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const gallery = document.getElementById('image-gallery');
+        const collapseBtn = document.getElementById('collapseBtn');
+        const panelContent = document.getElementById('panelContent');
+        const previewModal = document.getElementById('previewModal');
+        const previewImg = document.getElementById('previewImg');
+
+        // 控制面板收起/展开
+        collapseBtn.addEventListener('click', () => {
+            panelContent.classList.toggle('collapsed');
+            collapseBtn.classList.toggle('collapsed');
+            collapseBtn.textContent = panelContent.classList.contains('collapsed') ? '▲' : '▼';
+        });
+
+        // 标签切换
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+
+        // 加载远程图片
+        document.getElementById('load-remote-btn').addEventListener('click', () => {
+            const linksText = document.getElementById('image-links').value.trim();
+            if (!linksText) {
+                showEmptyTip('请输入图片链接');
+                return;
+            }
+            const links = linksText.split('\n').filter(link => link.trim() !== '');
+            renderGallery(links, 'remote');
+        });
+
+        // 加载本地图片
+        document.getElementById('load-local-btn').addEventListener('click', () => {
+            const fileInput = document.getElementById('folder-input');
+            const files = fileInput.files;
+            if (files.length === 0) {
+                showEmptyTip('请选择本地文件夹');
+                return;
+            }
+            const imageUrls = [];
+            for (const file of files) {
+                if (file.type.startsWith('image/')) {
+                    imageUrls.push(URL.createObjectURL(file));
+                }
+            }
+            if (imageUrls.length === 0) {
+                showEmptyTip('所选文件夹中无图片文件');
+                return;
+            }
+            renderGallery(imageUrls, 'local');
+        });
+
+        // 渲染画廊
+        function renderGallery(imageUrls, type) {
+            gallery.innerHTML = '';
+            const galleryData = { type, count: imageUrls.length, urls: imageUrls };
+            localStorage.setItem('galleryData', JSON.stringify(galleryData));
+
+            imageUrls.forEach((url, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = `图片 ${index + 1}`;
+                img.onerror = () => {
+                    img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTBlMGUwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiPuWKoOi2rOmDveWFseS6rTwvdGV4dD48L3N2Zz4=';
+                };
+                item.addEventListener('click', () => openPreview(url));
+                item.appendChild(img);
+                gallery.appendChild(item);
+            });
+        }
+
+        // 打开预览
+        function openPreview(imgUrl) {
+            previewImg.src = imgUrl;
+            previewModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭预览
+        function closePreviewModal() {
+            previewModal.classList.remove('active');
+            previewImg.src = '';
+            document.body.style.overflow = 'auto';
+        }
+
+        // 点击空白处关闭
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) closePreviewModal();
+        });
+
+        // ESC键关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && previewModal.classList.contains('active')) closePreviewModal();
+        });
+
+        function showEmptyTip(text) {
+            gallery.innerHTML = `<div class="empty-tip">${text}</div>`;
+        }
+
+        // 页面加载恢复数据
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedData = localStorage.getItem('galleryData');
+            if (savedData) {
+                const galleryData = JSON.parse(savedData);
+                renderGallery(galleryData.urls, galleryData.type);
+                galleryData.type === 'local' ? tabBtns[1].click() : tabBtns[0].click();
+            } else {
+                showEmptyTip('请选择远程链接或本地文件夹加载图片');
+            }
+        });
+    </script>
+</body>
+
+</html>
