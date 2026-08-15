@@ -1,0 +1,18 @@
+我是新来的，请多关照
+无语了，好像只能上传手写的
+离离原上谱，烦了！！！
+git命令（初始化本地库）
+git init（创建库）
+git add . (将目录所有内容加入暂存区)
+git commit -m "备注" (提交库，生成记录)
+
+git status (查看当前状态的命令)
+
+git clone https://  (克隆GitHub项目到本地)
+
+git remote add origin https://  (本地关联GitHub)
+
+git push -u origin master (首次提交到GitHub)
+git push -u origin master (后续每次提交到GitHub)
+
+ssh-keygen -t rsa -b 4096 -C "xgdlove@qq.com"
