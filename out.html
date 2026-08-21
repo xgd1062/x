@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
     <link rel="shortcut icon" href="https://xgd1062.github.io/v/img/星星.png">
     <title>软件收藏页</title>
@@ -13,13 +13,13 @@
         /* CSS 变量管理色彩 - 默认日间模式 */
         :root {
             --bg-main: linear-gradient(to right top, #65dfc9, #6cdbeb);
-            --card-bg-abc: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
-            --btn-bg-abc: antiquewhite;
-            --text-abc: #658ec6;
+            --card-bg-abc: transparent;
+            --btn-bg-abc: rgba(255, 255, 255, 0.85);
+            --text-abc: #2c5282;
 
-            --card-bg-bbc: linear-gradient(to right bottom, rgba(170, 161, 206, 0.5), rgba(237, 236, 246, 0.7));
-            --btn-bg-bbc: #dce3f3;
-            --text-bbc: #2775b6;
+            --card-bg-bbc: transparent;
+            --btn-bg-bbc: #ffffff;
+            --text-bbc: #2c5282;
 
             --card-bg-ed: linear-gradient(to right bottom, rgba(195, 224, 231, 0.7), rgba(190, 224, 208, 0.7));
             --btn-bg-ed1: #d4eaee;
@@ -37,20 +37,20 @@
             --text-link: #000000;
             --text-link-hover: #ffffff;
 
-            --toggle-bg: rgba(255, 255, 255, 0.8);
+            --toggle-bg: rgba(255, 255, 255, 0.85);
             --toggle-color: #333333;
         }
 
         /* 夜晚模式 (Dark Mode) */
         body.dark-mode {
             --bg-main: linear-gradient(to right top, #0f2027, #203a43, #2c5364);
-            --card-bg-abc: linear-gradient(to right bottom, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
-            --btn-bg-abc: #1e293b;
+            --card-bg-abc: transparent;
+            --btn-bg-abc: rgba(30, 41, 59, 0.85);
             --text-abc: #93c5fd;
 
-            --card-bg-bbc: linear-gradient(to right bottom, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
-            --btn-bg-bbc: #334155;
-            --text-bbc: #60a5fa;
+            --card-bg-bbc: transparent;
+            --btn-bg-bbc: #1e293b;
+            --text-bbc: #38bdf8;
 
             --card-bg-ed: linear-gradient(to right bottom, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
             --btn-bg-ed1: #334155;
@@ -78,6 +78,7 @@
             margin: 0;
             border: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         a {
@@ -100,14 +101,14 @@
             color: var(--toggle-color);
             border: none;
             border-radius: 50%;
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 22px;
             transition: all 0.3s ease;
         }
 
@@ -119,101 +120,227 @@
         .main {
             background: var(--bg-main);
             min-height: 100vh;
-            padding-top: 16px;
-            padding-bottom: 20px;
+            padding-top: 20px;
+            padding-bottom: 30px;
             position: relative;
             transition: background 0.3s ease;
+            overflow-x: hidden;
         }
 
-        /* 第一部分：三行随机长度布局 */
+        /* ==================== 第一部分：自适应文本长度流式布局 ==================== */
         .abc {
             width: 90%;
-            margin: 0 auto;
-            padding: 12px 15px;
-            background: var(--card-bg-abc);
-            border-radius: 1rem;
+            max-width: 1200px;
+            margin: 10px auto 20px;
+            padding: 10px;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            transition: background 0.3s ease;
-        }
-
-        .abc-row {
-            display: flex;
+            flex-wrap: wrap;
             justify-content: center;
+            gap: 16px 14px;
             align-items: center;
-            gap: 12px;
-            width: 100%;
         }
 
-        .abc-row a {
+        .abc-card {
+            position: relative;
+            background: var(--btn-bg-abc);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            height: 70px;
+            padding: 0 24px;
+            /* 根据文字自动延伸边距 */
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 50px;
-            background-color: var(--btn-bg-abc);
-            border-radius: 25px;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .abc-row h2 {
-            font-size: 26px;
-            color: var(--text-abc);
-            font-weight: normal;
-            white-space: nowrap;
-        }
-
-        /* 长短错落修饰类 */
-        .abc-row .w-sm {
-            padding: 0 18px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             flex-grow: 1;
-            max-width: 160px;
+            /* 充填剩余空间让边缘平整 */
+            max-width: 100%;
         }
 
-        .abc-row .w-md {
-            padding: 0 30px;
+        .abc-card h2 {
+            font-size: 18px;
+            color: var(--text-abc);
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.2;
+            white-space: nowrap;
+            /* 保持单行自适应 */
+            z-index: 2;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .abc-card:hover {
+                transform: scale(1.06) rotate(0deg) translateY(-4px) !important;
+                box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+                z-index: 10;
+                background: rgba(255, 255, 255, 0.98);
+            }
+
+            body.dark-mode .abc-card:hover {
+                background: rgba(30, 41, 59, 0.98);
+            }
+        }
+
+        /* 调换后的顺序与个性化外形/倾斜度 */
+        .abc-card.c1 {
+            order: 1;
+            transform: rotate(-2deg);
+            border-radius: 22px 12px 20px 14px;
+        }
+
+        .abc-card.c2 {
+            order: 2;
+            transform: rotate(1.5deg);
+            border-radius: 14px 24px 14px 22px;
+        }
+
+        .abc-card.c7 {
+            order: 3;
+            transform: rotate(-1.8deg);
+            border-radius: 20px 16px 26px 12px;
+        }
+
+        .abc-card.c3 {
+            order: 4;
+            transform: rotate(2deg);
+            border-radius: 16px 22px 12px 20px;
+        }
+
+        .abc-card.c4 {
+            order: 5;
+            transform: rotate(-1deg);
+            border-radius: 26px 14px 20px 24px;
+            background: linear-gradient(135deg, var(--btn-bg-abc), rgba(255, 255, 255, 0.6));
             flex-grow: 2;
-            max-width: 260px;
+            /* 较长文字占更大比例 */
         }
 
-        .abc-row .w-lg {
-            padding: 0 45px;
-            flex-grow: 3;
-            max-width: 380px;
+        .abc-card.c4 h2 {
+            color: var(--text-bbc);
+            font-size: 19px;
         }
 
-        /* 中部欢迎栏 */
+        .abc-card.c6 {
+            order: 6;
+            transform: rotate(2.5deg);
+            border-radius: 22px 14px 24px 16px;
+        }
+
+        .abc-card.c5 {
+            order: 7;
+            transform: rotate(-2deg);
+            border-radius: 12px 20px 14px 22px;
+        }
+
+        .abc-card.c8 {
+            order: 8;
+            transform: rotate(1deg);
+            border-radius: 18px 24px 14px 20px;
+        }
+
+        .abc-card.c11 {
+            order: 9;
+            transform: rotate(-2.5deg);
+            border-radius: 16px 22px 12px 20px;
+        }
+
+        .abc-card.c9 {
+            order: 10;
+            transform: rotate(1.5deg);
+            border-radius: 14px 20px 18px 22px;
+        }
+
+        .abc-card.c10 {
+            order: 11;
+            transform: rotate(-1deg);
+            border-radius: 22px 12px 20px 12px;
+        }
+
+        /* 第二部分：贴画风格文字标识栏 */
         .bbc {
             width: 90%;
-            margin: 10px auto 0;
-            padding: 6px 10px;
-            background: var(--card-bg-bbc);
-            border-radius: 1rem;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 10px;
+            background: transparent;
             display: flex;
-            justify-content: space-between;
-            gap: 1%;
-            transition: background 0.3s ease;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
         }
 
-        .bbc a {
+        .bbc span {
             flex: 1;
-            height: 60px;
-            line-height: 60px;
-            background-color: var(--btn-bg-bbc);
+            max-width: 180px;
+            height: 62px;
+            line-height: 54px;
             text-align: center;
-            font-size: 30px;
-            border-radius: 15px;
+            font-size: 26px;
+            font-weight: 800;
             color: var(--text-bbc);
-            transition: background-color 0.3s ease;
+            background-color: var(--btn-bg-bbc);
+            border: 4px solid #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12), inset 0 -3px 0 rgba(0, 0, 0, 0.08);
+            user-select: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
         }
 
-        /* 分组链接区 */
+        .bbc span:nth-child(1) {
+            transform: rotate(-4deg);
+            background: #ffbe0b;
+            color: #5c3d00;
+        }
+
+        .bbc span:nth-child(2) {
+            transform: rotate(3deg);
+            background: #ff006e;
+            color: #ffffff;
+        }
+
+        .bbc span:nth-child(3) {
+            transform: rotate(-2deg);
+            background: #8338ec;
+            color: #ffffff;
+        }
+
+        .bbc span:nth-child(4) {
+            transform: rotate(4deg);
+            background: #3a86ff;
+            color: #ffffff;
+        }
+
+        .bbc span:nth-child(5) {
+            transform: rotate(-3deg);
+            background: #06d6a0;
+            color: #004d38;
+        }
+
+        body.dark-mode .bbc span {
+            border-color: #334155;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .bbc span:hover {
+                transform: scale(1.15) rotate(0deg) translateY(-6px) !important;
+                box-shadow: 0 14px 24px rgba(0, 0, 0, 0.2), inset 0 -3px 0 rgba(0, 0, 0, 0.1);
+                z-index: 5;
+            }
+        }
+
+        /* 第三部分：分组链接区 */
         .ed {
             background: var(--card-bg-ed);
             border-radius: 1rem;
-            margin: 10px 5%;
-            padding: 10px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 15px auto;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -228,16 +355,18 @@
 
         .ed-row a {
             flex: 1;
-            height: 35px;
-            line-height: 35px;
+            height: 42px;
+            line-height: 42px;
             text-align: center;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-size: 0.9em;
+            font-size: 1rem;
+            font-weight: 500;
             border-radius: 15px;
             color: var(--text-ed);
             background-color: var(--btn-bg-ed1);
+            padding: 0 4px;
             transition: background-color 0.3s ease;
         }
 
@@ -245,17 +374,18 @@
             background-color: var(--btn-bg-ed2);
         }
 
-        /* 底部链接区 */
+        /* 第四部分：底部链接区 */
         .dd {
             margin: 0 auto;
-            padding: 10px;
-            width: 80%;
+            padding: 12px;
+            width: 85%;
+            max-width: 1100px;
             background: var(--card-bg-dd);
             border-radius: 1rem;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 8px;
+            gap: 10px 8px;
             transition: background 0.3s ease;
         }
 
@@ -263,9 +393,10 @@
             background-color: var(--btn-bg-dd);
             color: var(--text-dd);
             border-radius: 1rem;
-            line-height: 25px;
-            padding: 2px 10px;
-            font-size: 14px;
+            line-height: 30px;
+            padding: 2px 16px;
+            font-size: 15px;
+            font-weight: 500;
             transition: background-color 0.3s ease;
         }
 
@@ -273,16 +404,18 @@
         .yiyan {
             font-size: 18px;
             color: var(--text-yiyan);
-            width: 100%;
+            width: 90%;
+            margin: 16px auto 0;
             text-align: center;
-            margin-top: 12px;
+            line-height: 1.6;
         }
 
         .yiyan span {
             background: var(--bg-yiyan-span);
             color: var(--text-yiyan-span);
-            padding: 2px 8px;
-            border-radius: 8px;
+            padding: 6px 16px;
+            border-radius: 12px;
+            display: inline-block;
             transition: all 0.3s ease;
         }
 
@@ -323,11 +456,11 @@
         /* 二维码定位 */
         .qr-code {
             position: absolute;
-            top: 5px;
-            left: 5px;
-            width: 24%;
-            max-width: 120px;
-            border-radius: 25px;
+            top: 10px;
+            left: 10px;
+            width: 100px;
+            border-radius: 20px;
+            z-index: 10;
         }
 
         .qr-code img {
@@ -336,27 +469,136 @@
             border-radius: inherit;
         }
 
-        /* 移动端适配 */
-        @media screen and (max-width: 600px) {
-            .abc-row {
-                flex-wrap: wrap;
+        /* ==================== 移动端适配 (Mobile Viewport) ==================== */
+        @media screen and (max-width: 768px) {
+            .main {
+                padding-top: 60px;
+                padding-bottom: 20px;
             }
 
-            .abc-row a {
-                width: 100%;
-                max-width: none !important;
+            .dark-mode-toggle {
+                top: 12px;
+                right: 12px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
             }
 
             .qr-code {
-                border-radius: 10%;
+                top: 12px;
+                left: 12px;
+                width: 56px;
+                border-radius: 12px;
             }
 
+            /* 第一部分移动端自适应 */
+            .abc {
+                width: 94%;
+                gap: 10px 8px;
+                padding: 4px;
+                margin-bottom: 12px;
+            }
+
+            .abc-card {
+                height: 54px;
+                padding: 0 16px;
+                border-radius: 12px !important;
+                transform: none !important;
+                flex-grow: 1;
+            }
+
+            .abc-card h2 {
+                font-size: 14px !important;
+            }
+
+            /* 第二部分：贴画移动端适配 */
+            .bbc {
+                width: 94%;
+                gap: 6px;
+                padding: 0;
+                margin: 12px auto;
+            }
+
+            .bbc span {
+                height: 42px;
+                line-height: 36px;
+                font-size: 15px;
+                border-width: 3px;
+                border-radius: 12px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .bbc span:nth-child(1) {
+                transform: rotate(-2deg);
+            }
+
+            .bbc span:nth-child(2) {
+                transform: rotate(1.5deg);
+            }
+
+            .bbc span:nth-child(3) {
+                transform: rotate(-1deg);
+            }
+
+            .bbc span:nth-child(4) {
+                transform: rotate(2deg);
+            }
+
+            .bbc span:nth-child(5) {
+                transform: rotate(-1.5deg);
+            }
+
+            /* 第三部分：分组链接三列适配 */
+            .ed {
+                width: 94%;
+                padding: 10px;
+                gap: 8px;
+                margin: 10px auto;
+            }
+
+            .ed-row {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+
+            .ed-row a {
+                height: 38px;
+                line-height: 38px;
+                font-size: 12px;
+                border-radius: 10px;
+            }
+
+            /* 第四部分：底部标签适配 */
             .dd {
-                text-align: center;
+                width: 94%;
+                padding: 10px 8px;
+                gap: 6px;
             }
 
             .dd a {
-                white-space: nowrap;
+                font-size: 12px;
+                line-height: 24px;
+                padding: 2px 10px;
+                border-radius: 8px;
+            }
+
+            /* 一言与装饰 */
+            .yiyan {
+                font-size: 14px;
+                width: 94%;
+                margin-top: 12px;
+            }
+
+            .yiyan span {
+                padding: 4px 12px;
+                border-radius: 8px;
+            }
+
+            .t1,
+            .t2,
+            .t3 {
+                display: none;
             }
         }
     </style>
@@ -367,52 +609,53 @@
     <button class="dark-mode-toggle" id="darkModeBtn" title="切换模式" aria-label="切换夜晚模式">🌙</button>
 
     <div class="main">
-        <!-- 第一部分：分成三行，不同比例/长度的随机错落布局 -->
+        <!-- 第一部分：根据文字长度自适应长短的卡片（调整后顺序） -->
         <div class="abc">
-            <!-- 第 1 行 -->
-            <div class="abc-row">
-                <a href="http://xgd1062.github.io/x/index.html" class="w-sm">
-                    <h2>首页</h2>
-                </a>
-                <a href="http://i.chaoxing.com/base?t=1633682044693" class="w-md">
-                    <h2>学习通</h2>
-                </a>
-                <a href="http://pc.woozooo.com/mydisk.php" class="w-lg">
-                    <h2>蓝奏云</h2>
-                </a>
-            </div>
+            <a href="http://xgd1062.github.io/x/index.html" class="abc-card c1">
+                <h2>首页</h2>
+            </a>
+            <a href="http://i.chaoxing.com/base?t=1633682044693" class="abc-card c2">
+                <h2>学习通</h2>
+            </a>
+            <a href="http://www.bilibili.com/" class="abc-card c7">
+                <h2>哔哩哔哩</h2>
+            </a>
+            <a href="http://pc.woozooo.com/mydisk.php" class="abc-card c3">
+                <h2>蓝奏云</h2>
+            </a>
 
-            <!-- 第 2 行 -->
-            <div class="abc-row">
-                <a href="http://github.com/" class="w-lg">
-                    <h2>全球最大的同性交友网站</h2>
-                </a>
-                <a href="http://test.nju.edu.cn/" class="w-sm">
-                    <h2>测速网站</h2>
-                </a>
-            </div>
+            <a href="http://github.com/" class="abc-card c4">
+                <h2>全球最大的同性交友网站</h2>
+            </a>
 
-            <!-- 第 3 行 -->
-            <div class="abc-row">
-                <a href="http://tool.liumingye.cn/music/?page=searchPage" class="w-md">
-                    <h2>音乐网站</h2>
-                </a>
-                <a href="http://www.bilibili.com/" class="w-sm">
-                    <h2>哔哩哔哩</h2>
-                </a>
-                <a href="http://www.ahau.edu.cn/" class="w-lg">
-                    <h2>安徽农业大学</h2>
-                </a>
-            </div>
+            <a href="今日吃什么.html" class="abc-card c6">
+                <h2>今日吃什么？</h2>
+            </a>
+            <a href="http://test.nju.edu.cn/" class="abc-card c5">
+                <h2>测速网站</h2>
+            </a>
+            <a href="http://www.ahau.edu.cn/" class="abc-card c8">
+                <h2>安徽农业大学</h2>
+            </a>
+
+            <a href="https://cv-2x9.pages.dev/" class="abc-card c11">
+                <h2>涂鸦手账</h2>
+            </a>
+            <a href="瀑布流图片展示.html" class="abc-card c9">
+                <h2>瀑布流图片</h2>
+            </a>
+            <a href="胶卷幻灯片/index.html" class="abc-card c10">
+                <h2>胶卷幻灯片</h2>
+            </a>
         </div>
 
-        <!-- 上面单行。下面隔间 -->
+        <!-- 第二部分：贴画风格文字标识栏 -->
         <div class="bbc">
-            <a href="#">你好</a>
-            <a href="#">欢迎</a>
-            <a href="#">来到</a>
-            <a href="#">我的</a>
-            <a href="http://kdocs.cn/l/cmS2SqU1Ckt9">世界</a>
+            <span>你好</span>
+            <span>欢迎</span>
+            <span>来到</span>
+            <span>我的</span>
+            <span>世界</span>
         </div>
 
         <!-- 具体小隔间 -->
@@ -472,8 +715,8 @@
 
     <a href="http://xgd1062.github.io/v" class="qr-code">
         <picture>
-            <source media="(max-width: 600px)" srcset="https://xgd1062.github.io/v/img/mp2.webp">
-            <img src="https://xgd1062.github.io/v/img/mp.png" alt="微信扫一扫" title="微信扫一扫">
+            <source media="(max-width: 600px)" srcset="https://xgd1062.github.io/1062/000/img/mp2.webp">
+            <img src="https://xgd1062.github.io/1062/000/img/mp.png" alt="微信扫一扫" title="微信扫一扫">
         </picture>
     </a>
 
@@ -481,7 +724,6 @@
     <script>
         const btn = document.getElementById('darkModeBtn');
 
-        // 读取本地存储模式状态
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
             btn.textContent = '☀️';
