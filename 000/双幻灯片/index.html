@@ -3,104 +3,611 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="referrer" content="no-referrer" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>双路无限循环幻灯片 - 纠错自适应版</title>
+    <title>胶卷播放器 - 自动加载同目录图库</title>
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
-        .div1 {
-            background: linear-gradient(to right top, #65dfc9, #6cdbeb);
+        body {
+            background-color: #050505;
+            color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 放映主舞台 */
+        .viewport {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            overflow: hidden;
+            padding: 12px 0;
+            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
+        }
+
+        /* 1. 背景滚动胶卷层 */
+        .film-strip-container {
+            position: relative;
             width: 100%;
+            height: 28%;
+            background: #111;
+            border-top: 2px solid #222;
+            border-bottom: 2px solid #222;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* 打孔带 */
+        .film-holes {
+            height: 20px;
+            width: 100%;
+            background-image: radial-gradient(circle, #050505 40%, transparent 45%);
+            background-size: 16px 20px;
+            background-repeat: repeat-x;
+            background-position: center;
+            border-top: 1px dashed #282828;
+            border-bottom: 1px dashed #282828;
+        }
+
+        .film-track {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .film-reel {
+            display: flex;
+            gap: 20px;
+            position: absolute;
+            left: 0;
+            white-space: nowrap;
+            will-change: transform;
+            height: 100%;
+            align-items: center;
+        }
+
+        /* 胶卷卡片底座 */
+        .film-frame {
+            position: relative;
+            height: 85%;
+            background: #18181b;
+            border: 4px solid #27272a;
+            border-radius: 4px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* 模式 1：动态适应原图尺寸（零裁剪） */
+        .mode-fit-frame .film-frame {
+            width: auto;
+        }
+
+        .mode-fit-frame .film-frame img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* 模式 2：固定 16:9 比例（留黑边零裁剪） */
+        .mode-standard-frame .film-frame {
+            aspect-ratio: 16 / 9;
+            width: auto;
+        }
+
+        .mode-standard-frame .film-frame img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .film-frame::after {
+            content: attr(data-frame-num);
+            position: absolute;
+            bottom: 4px;
+            right: 6px;
+            font-family: monospace;
+            font-size: 10px;
+            color: #f43f5e;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 1px 4px;
+            border-radius: 2px;
+            z-index: 2;
+        }
+
+        /* 2. 独立顶层展示区 */
+        .top-showcase-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .glass {
+        .showcase-card {
             position: relative;
-            height: 600px;
-            width: 80%;
-            max-width: 1000px;
-            background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
-            border-radius: 1rem;
-            z-index: 2;
-            backdrop-filter: blur(1rem);
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 65vw;
+            max-height: 60vh;
+            background: #000;
+            border: 5px solid #38bdf8;
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(56, 189, 248, 0.4);
+            padding: 6px;
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .img1,
-        .img2 {
+        .showcase-card.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .showcase-card img {
+            max-width: 100%;
+            max-height: 55vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-radius: 4px;
+        }
+
+        .showcase-card .badge {
+            position: absolute;
+            top: -14px;
+            left: 16px;
+            background: #e11d48;
+            color: #fff;
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .empty-state {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #64748b;
+            z-index: 10;
+        }
+
+        /* 全屏状态下隐藏控制面板 */
+        body.is-fullscreen .control-panel {
+            display: none !important;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: #0d0d0d;
+            border-top: 1px solid #222;
+            padding: 12px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 200;
+        }
+
+        .panel-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="text"],
+        select,
+        button {
+            background: #1c1c1c;
+            border: 1px solid #333;
+            color: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        button {
+            cursor: pointer;
+            background: #2563eb;
+            border: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .file-upload-btn {
+            position: relative;
+            display: inline-block;
+            background: #059669;
+        }
+
+        .file-upload-btn input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            width: 100%;
             height: 100%;
-            width: 50%;
-            object-fit: cover;
-            transition: opacity 0.5s ease;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
+
+    <!-- 放映主舞台 -->
+    <div class="viewport mode-fit-frame" id="viewport">
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <h3>未加载到图片</h3>
+            <p style="margin-top: 6px; font-size: 13px;">请在同级“图库1”或“图库2”文件夹中放入图片（命名如 1.jpg, 2.jpg...），或在下方手动上传</p>
+        </div>
+
+        <!-- 背景：三行连续滚动胶卷轨 -->
+        <div class="film-strip-container">
+            <div class="film-holes"></div>
+            <div class="film-track">
+                <div class="film-reel" id="reelTop"></div>
+            </div>
+            <div class="film-holes"></div>
+        </div>
+
+        <div class="film-strip-container">
+            <div class="film-holes"></div>
+            <div class="film-track">
+                <div class="film-reel" id="reelMiddle"></div>
+            </div>
+            <div class="film-holes"></div>
+        </div>
+
+        <div class="film-strip-container">
+            <div class="film-holes"></div>
+            <div class="film-track">
+                <div class="film-reel" id="reelBottom"></div>
+            </div>
+            <div class="film-holes"></div>
+        </div>
+
+        <!-- 前景：顶层大图展示层 -->
+        <div class="top-showcase-layer">
+            <div class="showcase-card" id="showcaseCard">
+                <div class="badge" id="showcaseBadge">SHOWCASE</div>
+                <img id="showcaseImg" src="" alt="焦点放大大图">
+            </div>
+        </div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel" id="controlPanel">
+        <div class="panel-group">
+            <input type="text" id="urlInput" placeholder="输入图片 URL..." style="width: 160px;">
+            <button id="addUrlBtn">装载外链</button>
+            <div class="file-upload-btn button" style="padding: 8px 12px; border-radius: 6px;">
+                选择本地图片上传
+                <input type="file" id="fileInput" multiple accept="image/*">
+            </div>
+        </div>
+
+        <div class="panel-group">
+            <button id="playBtn" style="background: #e11d48; font-weight: bold;">暂停放映</button>
+
+            <label for="modeSelect" style="font-size: 13px;">背景胶片规格：</label>
+            <select id="modeSelect">
+                <option value="mode-fit-frame" selected>动态适应原图 (零裁剪)</option>
+                <option value="mode-standard-frame">标准16:9框 (留黑边零裁剪)</option>
+            </select>
+
+            <label for="speedSelect" style="font-size: 13px; margin-left: 6px;">带速：</label>
+            <select id="speedSelect">
+                <option value="1">慢速</option>
+                <option value="2" selected>标准</option>
+                <option value="3.5">快速</option>
+            </select>
+        </div>
+
+        <div class="panel-group">
+            <button id="fullscreenBtn" style="background: #7c3aed; font-weight: bold;">⛶ 全屏放映</button>
+            <button id="clearBtn" style="background: #dc2626;">清空胶片</button>
+        </div>
+    </div>
+
     <script>
-        // 1. 构建 DOM 结构
-        const divContainer = document.createElement('div');
-        divContainer.className = 'div1';
-        divContainer.innerHTML = `<div class="glass"></div>`;
-        document.body.appendChild(divContainer);
+        const images = [];
+        let isRolling = true;
+        let baseSpeed = 2;
+        let currentFocusIndex = 0;
+        let focusTimer = null;
 
-        const imageLeft = document.createElement('img');
-        const imageRight = document.createElement('img');
-        imageLeft.className = 'img1';
-        imageRight.className = 'img2';
+        const tracksConfig = [
+            { id: 'reelTop', dir: 1, speedFactor: 1, pos: 0 },
+            { id: 'reelMiddle', dir: -1, speedFactor: 1.25, pos: 0 },
+            { id: 'reelBottom', dir: 1, speedFactor: 1.5, pos: 0 }
+        ];
 
-        const glassBox = document.querySelector('.glass');
-        glassBox.appendChild(imageLeft);
-        glassBox.appendChild(imageRight);
+        const emptyState = document.getElementById('emptyState');
+        const viewport = document.getElementById('viewport');
+        const urlInput = document.getElementById('urlInput');
+        const addUrlBtn = document.getElementById('addUrlBtn');
+        const fileInput = document.getElementById('fileInput');
+        const playBtn = document.getElementById('playBtn');
+        const speedSelect = document.getElementById('speedSelect');
+        const modeSelect = document.getElementById('modeSelect');
+        const clearBtn = document.getElementById('clearBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-        // 2. 状态变量 (准则4 & 8: 严格审查变量名)
-        let g1_idx = 1;
-        let g2_idx = 1;
+        const showcaseCard = document.getElementById('showcaseCard');
+        const showcaseImg = document.getElementById('showcaseImg');
+        const showcaseBadge = document.getElementById('showcaseBadge');
 
-        // 3. 核心纠错逻辑：当图片加载失败时，重置为第一张
-        // 这实现了无需知道总数也能无限循环的效果
-        imageLeft.onerror = function () {
-            console.log("图库1已达上限，重置为1");
-            g1_idx = 1;
-            this.src = `图库1/${g1_idx}.jpg`;
-        };
-
-        imageRight.onerror = function () {
-            console.log("图库2已达上限，重置为1");
-            g2_idx = 1;
-            this.src = `图库2/${g2_idx}.jpg`;
-        };
-
-        // 4. 初始化显示
-        imageLeft.src = `图库1/${g1_idx}.jpg`;
-        imageRight.src = `图库2/${g2_idx}.jpg`;
-
-        // 5. 独立循环函数
-        function loopLeft() {
-            g1_idx++;
-            imageLeft.src = `图库1/${g1_idx}.jpg`;
+        // 预设 SVG 生成器（当本地文件夹为空时自动备用）
+        function createSvgImage(width, height, text, bgColor) {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+        <rect width="100%" height="100%" fill="${bgColor}"/>
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-size="24" font-family="sans-serif" font-weight="bold">${text}</text>
+      </svg>`;
+            return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
         }
 
-        function loopRight() {
-            g2_idx++;
-            imageRight.src = `图库2/${g2_idx}.jpg`;
+        const fallbackImages = [
+            createSvgImage(800, 450, '未读取到本地图库图片', '#2563eb'),
+            createSvgImage(400, 600, '请在 图库1/图库2 放入图片', '#059669'),
+            createSvgImage(900, 300, '支持命名如 1.jpg, 2.png 等', '#d97706')
+        ];
+
+        // --- 自动探测“图库1”与“图库2”中的图片 ---
+        function checkImageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(url);
+                img.onerror = () => resolve(null);
+                img.src = url;
+            });
         }
 
-        // 6. 开启定时器
-        setInterval(loopLeft, 2500);
-        setInterval(loopRight, 2500);
+        async function loadLocalGalleryImages() {
+            const folders = ['./图库1', './图库2'];
+            const extensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+            const maxIndexToCheck = 20; // 默认检查 1 到 20 号文件名
+
+            const checkPromises = [];
+
+            folders.forEach(folder => {
+                for (let i = 1; i <= maxIndexToCheck; i++) {
+                    extensions.forEach(ext => {
+                        const path = `${folder}/${i}.${ext}`;
+                        checkPromises.push(checkImageExists(path));
+                    });
+                }
+            });
+
+            const results = await Promise.all(checkPromises);
+            const validImages = results.filter(url => url !== null);
+
+            if (validImages.length > 0) {
+                images.push(...validImages);
+            } else {
+                images.push(...fallbackImages);
+            }
+
+            buildFilm();
+        }
+
+        function buildFilm() {
+            const containers = document.querySelectorAll('.film-strip-container');
+
+            if (images.length === 0) {
+                emptyState.style.display = 'block';
+                containers.forEach(c => c.style.opacity = '0');
+                stopShowcaseCycle();
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            containers.forEach(c => c.style.opacity = '1');
+
+            const displayList = [...images, ...images, ...images, ...images];
+
+            tracksConfig.forEach(config => {
+                const reel = document.getElementById(config.id);
+                reel.innerHTML = '';
+
+                displayList.forEach((src, idx) => {
+                    const frame = document.createElement('div');
+                    frame.className = 'film-frame';
+                    const originalIdx = idx % images.length;
+                    const frameNo = String(originalIdx + 1).padStart(2, '0');
+                    frame.setAttribute('data-frame-num', `FILM-${frameNo}`);
+
+                    const img = document.createElement('img');
+                    img.src = src;
+
+                    frame.appendChild(img);
+                    reel.appendChild(frame);
+                });
+            });
+
+            startShowcaseCycle();
+        }
+
+        // --- 顶层大图展示逻辑 ---
+        function triggerNextShowcase() {
+            if (images.length === 0 || !isRolling) return;
+
+            const currentSrc = images[currentFocusIndex];
+            showcaseImg.src = currentSrc;
+            showcaseBadge.innerText = `FEATURED FILM-${String(currentFocusIndex + 1).padStart(2, '0')}`;
+
+            showcaseCard.classList.add('active');
+
+            focusTimer = setTimeout(() => {
+                showcaseCard.classList.remove('active');
+
+                focusTimer = setTimeout(() => {
+                    currentFocusIndex = (currentFocusIndex + 1) % images.length;
+                    triggerNextShowcase();
+                }, 1000);
+
+            }, 3000);
+        }
+
+        function startShowcaseCycle() {
+            stopShowcaseCycle();
+            if (images.length > 0) {
+                triggerNextShowcase();
+            }
+        }
+
+        function stopShowcaseCycle() {
+            if (focusTimer) clearTimeout(focusTimer);
+            showcaseCard.classList.remove('active');
+        }
+
+        // --- 全屏开关逻辑 ---
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    document.body.classList.add('is-fullscreen');
+                }).catch(err => {
+                    console.error(`无法进入全屏模式: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                document.body.classList.remove('is-fullscreen');
+            } else {
+                document.body.classList.add('is-fullscreen');
+            }
+        });
+
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        // 胶卷滚动动画
+        function animate() {
+            if (images.length > 0 && isRolling) {
+                tracksConfig.forEach(config => {
+                    const reel = document.getElementById(config.id);
+                    const frames = reel.querySelectorAll('.film-frame');
+
+                    if (frames.length > 0) {
+                        let singleSetWidth = 0;
+                        for (let i = 0; i < images.length; i++) {
+                            if (frames[i]) {
+                                const rect = frames[i].getBoundingClientRect();
+                                singleSetWidth += rect.width + 20;
+                            }
+                        }
+
+                        if (singleSetWidth > 0) {
+                            config.pos += config.dir * baseSpeed * config.speedFactor;
+
+                            if (config.pos >= singleSetWidth) {
+                                config.pos -= singleSetWidth;
+                            } else if (config.pos < 0) {
+                                config.pos += singleSetWidth;
+                            }
+
+                            reel.style.transform = `translate3d(-${config.pos}px, 0, 0)`;
+                        }
+                    }
+                });
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        modeSelect.addEventListener('change', (e) => {
+            viewport.className = `viewport ${e.target.value}`;
+        });
+
+        playBtn.addEventListener('click', () => {
+            isRolling = !isRolling;
+            playBtn.innerText = isRolling ? '暂停放映' : '继续放映';
+            playBtn.style.background = isRolling ? '#e11d48' : '#059669';
+
+            if (isRolling) {
+                startShowcaseCycle();
+            } else {
+                stopShowcaseCycle();
+            }
+        });
+
+        speedSelect.addEventListener('change', (e) => baseSpeed = parseFloat(e.target.value));
+
+        addUrlBtn.addEventListener('click', () => {
+            const url = urlInput.value.trim();
+            if (url) {
+                images.push(url);
+                urlInput.value = '';
+                buildFilm();
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    images.push(event.target.result);
+                    buildFilm();
+                };
+                reader.readAsDataURL(file);
+            });
+            fileInput.value = '';
+        });
+
+        clearBtn.addEventListener('click', () => {
+            images.length = 0;
+            currentFocusIndex = 0;
+            tracksConfig.forEach(c => c.pos = 0);
+            buildFilm();
+        });
+
+        // 启动流程：先探测加载本地图库，再渲染动画
+        loadLocalGalleryImages();
+        animate();
     </script>
 </body>
 
